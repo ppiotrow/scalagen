@@ -1,0 +1,14 @@
+#freaky shit
+*~
+
+#IDE files
+/.idea
+/.idea_modules
+
+#Target files
+/target
+/project/target
+/project/project/target
+/scalagen-core/target
+/scalagen-examples/target
+
