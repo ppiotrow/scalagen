@@ -1,7 +1,7 @@
 scalagen
 ========
 
-Important! project is still under developement.
+Important! project is still under development.
 
 Scala actors toolkit to solve problems in scalable way using genetic algorithms
 
@@ -48,7 +48,7 @@ Library uses a few types of actors to respect principle of single responsibility
 * Controller, it tries to keep the correct number of Fenotypes by killing and procreation order. It should realize some sellection strategy,
 * Evaluator, it knows the objective function so it can evaluate Fenotype value
 * RandomKiller, kills random fenotype TODO,
-* Procreator, konws mutation and crossover operators so can create new genotype from parents,
+* Procreator, knows mutation and crossover operators so can create new genotype from parents,
 * DeathItself, kills specified Fenotype.
 
 
