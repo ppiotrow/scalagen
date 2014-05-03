@@ -1,3 +1,5 @@
+package scalagen.actor
+
 import akka.actor.{Props, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit}
 import org.scalatest.{WordSpecLike, ShouldMatchers, BeforeAndAfterAll}
