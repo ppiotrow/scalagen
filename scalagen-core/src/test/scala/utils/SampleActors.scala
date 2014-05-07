@@ -3,9 +3,7 @@ package utils
 import scalagen.genome.Genome
 import scalagen.actor.{Procreator, Evaluator}
 
-object SampleImplementations {
-
-  sample =>
+object SampleActors {
 
   case class SampleGenome(chromosomes: Seq[Int]) extends Genome
 
@@ -18,7 +16,7 @@ object SampleImplementations {
    */
   class TestRecombineProcreator extends Procreator {
     override def recombine(genomeA: Genome, genomeB: Genome): Genome =
-      sample.recombine(genomeA, genomeB)
+      SampleOperators.recombine(genomeA, genomeB)
 
     override def mutate(genome: Genome): Genome =
       genome
@@ -32,7 +30,7 @@ object SampleImplementations {
       genomeA
 
     override def mutate(genome: Genome): Genome =
-      sample.mutate(genome)
+      SampleOperators.mutate(genome)
   }
 
   /**
@@ -40,22 +38,10 @@ object SampleImplementations {
    */
   class TestRecombineAndMutateProcreator extends Procreator {
     override def recombine(genomeA: Genome, genomeB: Genome): Genome =
-      sample.recombine(genomeA, genomeB)
+      SampleOperators.recombine(genomeA, genomeB)
 
     override def mutate(genome: Genome): Genome =
-      sample.mutate(genome)
-  }
-
-  private def mutate(genome: Genome): SampleGenome = {
-    val chromosomes = genome.asInstanceOf[SampleGenome].chromosomes
-    new SampleGenome(chromosomes.init :+ (chromosomes.last + 1))
-  }
-
-  private def recombine(genomeA: Genome, genomeB: Genome): Genome = {
-    val chromosomesA = genomeA.asInstanceOf[SampleGenome].chromosomes
-    val chromosomesB = genomeB.asInstanceOf[SampleGenome].chromosomes
-    val half = chromosomesA.size / 2
-    new SampleGenome(chromosomesA.take(half) ++ chromosomesB.drop(half))
+      SampleOperators.mutate(genome)
   }
 
 }

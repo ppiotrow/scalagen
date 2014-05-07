@@ -4,7 +4,7 @@ import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
 import akka.actor.ActorSystem
 import org.scalatest.WordSpecLike
 import utils.StopSystemAfterAll
-import utils.SampleImplementations.{TestRecombineAndMutateProcreator, TestMutateProcreator, TestRecombineProcreator, SampleGenome}
+import utils.SampleActors.{TestRecombineAndMutateProcreator, TestMutateProcreator, TestRecombineProcreator, SampleGenome}
 import scalagen.message.{Descendant, Reproduce}
 
 class ProcreatorActorTest extends TestKit(ActorSystem("ProcreatorTestActorSystem"))

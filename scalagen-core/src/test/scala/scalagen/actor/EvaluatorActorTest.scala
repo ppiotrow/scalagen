@@ -5,7 +5,7 @@ import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
 import org.scalatest.WordSpecLike
 import scalagen.message.{Evaluated, Eval}
 import utils.{StopSystemAfterAll}
-import utils.SampleImplementations.{TestEvaluator, SampleGenome}
+import utils.SampleActors.{TestEvaluator, SampleGenome}
 
 class EvaluatorActorTest extends TestKit(ActorSystem("EvaluatorTestActorSystem"))
 with ImplicitSender

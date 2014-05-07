@@ -5,7 +5,7 @@ import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
 import org.scalatest.WordSpecLike
 import scalagen.message.ReadGenom
 import utils.StopSystemAfterAll
-import utils.SampleImplementations.SampleGenome
+import utils.SampleActors.SampleGenome
 
 class FenotypeActorTest extends TestKit(ActorSystem("FenotypeTestActorSystem"))
 with ImplicitSender
