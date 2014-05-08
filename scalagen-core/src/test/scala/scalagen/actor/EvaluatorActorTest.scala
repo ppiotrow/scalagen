@@ -13,12 +13,12 @@ with WordSpecLike
 with StopSystemAfterAll {
 
   "An EvaluatorActor " must {
-    "respond with evaluated fenotype" in {
+    "respond with evaluated phenotype" in {
       val sampleGenotype = SampleGenome(Seq(1, 4, 12, 3))
       val evaluator = TestActorRef(new TestEvaluator)
-      val testFenotype = TestActorRef(new Fenotype(sampleGenotype))
-      evaluator ! Eval(testFenotype, sampleGenotype)
-      expectMsg(Evaluated(testFenotype, 20))
+      val testPhenotype = TestActorRef(new Phenotype(sampleGenotype))
+      evaluator ! Eval(testPhenotype, sampleGenotype)
+      expectMsg(Evaluated(testPhenotype, 20))
     }
   }
 }

@@ -4,7 +4,7 @@ import akka.actor.{PoisonPill, Actor}
 import scalagen.message.Kill
 
 /**
- * Kills the specified [[Fenotype]].
+ * Kills the specified [[Phenotype]].
  */
 class DeathItself extends Actor {
   override def receive = {
