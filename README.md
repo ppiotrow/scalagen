@@ -31,24 +31,24 @@ Crossover operator should take two custom genotype objects as argument and retur
 
 Mutation operator should take one genotype and return it's mutation.
 
-Objective function take genotype as an argument. Its role is to evaluate its value. The bigger the value is the better fenotype it is. 
+Objective function take genotype as an argument. Its role is to evaluate its value. The bigger the value is the better phenotype it is.
 
 Initial population generator should return collection of genotypes to start evolution with. The better they are the faster good results may be obtained.
 
 User can also manipulate alghoritm's parameters. And these with defaults are: TODO
 * *scalagen.population.size.optimal* = 50,
 * *scalagen.mutation.probability* = 0.01,
-* *scalagen.fenotype.maxLifeTime* = 100,
+* *scalagen.phenotype.maxLifeTime* = 100,
 * *scalagen.death.probability* = 0.01.
 
 ## Actors
 Library uses a few types of actors to respect principle of single responsibility. These actor are:
-* Fenotype, it contains genotype,
+* Phenotype, it contains genotype,
 * EndAlgorithmActor, it makes decision when to stop algorithm and all the actors. It knows few of best genotypes with their born timestamps,
-* Controller, it tries to keep the correct number of Fenotypes by killing and procreation order. It should realize some sellection strategy,
-* Evaluator, it knows the objective function so it can evaluate Fenotype value
-* RandomKiller, kills random fenotype TODO,
+* Controller, it tries to keep the correct number of Phenotypes by killing and procreation order. It should realize some sellection strategy,
+* Evaluator, it knows the objective function so it can evaluate Phenotype value,
+* RandomKiller, kills random phenotype TODO,
 * Procreator, knows mutation and crossover operators so can create new genotype from parents,
-* DeathItself, kills specified Fenotype.
+* DeathItself, kills specified Phenotype.
 
 

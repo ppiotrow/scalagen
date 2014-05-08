@@ -7,16 +7,16 @@ import scalagen.message.ReadGenom
 import utils.StopSystemAfterAll
 import utils.SampleActors.SampleGenome
 
-class FenotypeActorTest extends TestKit(ActorSystem("FenotypeTestActorSystem"))
+class PhenotypeActorTest extends TestKit(ActorSystem("PhenotypeTestActorSystem"))
 with ImplicitSender
 with WordSpecLike
 with StopSystemAfterAll {
 
-  "An FenotypeActor" must {
+  "A Phenotype actor" must {
     "respond with its genotype" in {
       val sampleGenotype = SampleGenome(Seq(1, 4, 12, 3))
-      val fenotypeActorRef = TestActorRef(new Fenotype(sampleGenotype))
-      fenotypeActorRef ! ReadGenom
+      val phenotypeActorRef = TestActorRef(new Phenotype(sampleGenotype))
+      phenotypeActorRef ! ReadGenom
       expectMsg(sampleGenotype)
     }
   }

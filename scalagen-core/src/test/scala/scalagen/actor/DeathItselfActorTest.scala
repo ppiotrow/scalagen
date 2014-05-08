@@ -14,7 +14,7 @@ with StopSystemAfterAll {
 
   "A DeathItself actor" must {
     "kills the specified phenotype" in {
-      val phenotype = TestActorRef(new Fenotype(SampleGenome(Nil)))
+      val phenotype = TestActorRef(new Phenotype(SampleGenome(Nil)))
       val deathItself = TestActorRef[DeathItself]
 
       watch(phenotype)
