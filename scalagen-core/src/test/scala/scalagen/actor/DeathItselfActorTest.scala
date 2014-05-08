@@ -4,7 +4,7 @@ import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
 import akka.actor.ActorSystem
 import org.scalatest.WordSpecLike
 import utils.StopSystemAfterAll
-import scalagen.message.Kill
+import scalagen.message.Die
 import utils.SampleActors.SampleGenome
 
 class DeathItselfActorTest extends TestKit(ActorSystem("DeathItselfTestActorSystem"))
@@ -18,7 +18,7 @@ with StopSystemAfterAll {
       val deathItself = TestActorRef[DeathItself]
 
       watch(phenotype)
-      deathItself ! Kill(phenotype)
+      deathItself ! Die(phenotype)
 
       expectTerminated(phenotype)
     }
