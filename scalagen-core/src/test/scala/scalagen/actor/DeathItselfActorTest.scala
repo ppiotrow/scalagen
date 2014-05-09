@@ -13,7 +13,7 @@ with WordSpecLike
 with StopSystemAfterAll {
 
   "A DeathItself actor" must {
-    "kills the specified phenotype" in {
+    "kill the specified phenotype" in {
       val phenotype = TestActorRef(new Phenotype(SampleGenome(Nil)))
       val deathItself = TestActorRef[DeathItself]
 
