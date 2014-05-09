@@ -13,4 +13,4 @@ case class Reproduce(genomeA: Genome, genomeB: Genome)
 
 case class Descendant(genome: Genome)
 
-case class Kill(phenotype: ActorRef)
+case class Die(phenotype: ActorRef)

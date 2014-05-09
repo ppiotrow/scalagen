@@ -1,14 +1,14 @@
 package scalagen.actor
 
 import akka.actor.{PoisonPill, Actor}
-import scalagen.message.Kill
+import scalagen.message.Die
 
 /**
  * An actor that kills the specified [[Phenotype]].
  */
 class DeathItself extends Actor {
   override def receive = {
-    case Kill(phenotype) =>
+    case Die(phenotype) =>
       phenotype ! PoisonPill
   }
 }
