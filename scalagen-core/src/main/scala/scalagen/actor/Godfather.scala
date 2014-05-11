@@ -5,7 +5,7 @@ import scalagen.genome.Genome
 import scalagen.message.{Death, Kill, Phenotypes, GetPhenotypes}
 
 /**
- * The parent of all actors.
+ * The parent of all phenotypes.
  */
 abstract class Godfather(val deathItself: ActorRef,
                          val randomKiller: ActorRef) extends Actor {
