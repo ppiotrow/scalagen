@@ -45,6 +45,15 @@ object SampleActors {
       SampleOperators.mutate(genome)
   }
 
+  class TestGodfather(deathItself: ActorRef, randomKiller: ActorRef)
+    extends Godfather(deathItself, randomKiller) {
+    override def initialGenomes: Seq[Genome] =
+      List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
+
+    override def createPhenotype(genome: Genome): Phenotype =
+      new Phenotype(genome)
+  }
+
   class TestRandomKiller(randomKillRatio: Float)
     extends RandomKiller(randomKillRatio) {
     override def selectToKill(phenotypes: Seq[ActorRef]): Option[ActorRef] =
