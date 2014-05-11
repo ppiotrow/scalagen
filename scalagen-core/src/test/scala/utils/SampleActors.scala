@@ -1,7 +1,8 @@
 package utils
 
 import scalagen.genome.Genome
-import scalagen.actor.{Procreator, Evaluator}
+import scalagen.actor._
+import akka.actor.ActorRef
 
 object SampleActors {
 
@@ -42,6 +43,21 @@ object SampleActors {
 
     override def mutate(genome: Genome): Genome =
       SampleOperators.mutate(genome)
+  }
+
+  class TestGodfather(deathItself: ActorRef, randomKiller: ActorRef)
+    extends Godfather(deathItself, randomKiller) {
+    override def initialGenomes: Seq[Genome] =
+      List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
+
+    override def createPhenotype(genome: Genome): Phenotype =
+      new Phenotype(genome)
+  }
+
+  class TestRandomKiller(randomKillRatio: Float)
+    extends RandomKiller(randomKillRatio) {
+    override def randomKill(phenotypes: Seq[ActorRef]): Option[ActorRef] =
+      if (phenotypes.size > 0) Some(phenotypes.last) else None
   }
 
 }
