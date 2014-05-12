@@ -20,3 +20,5 @@ case class Descendant(genome: Genome)
 case class Kill(phenotype: ActorRef)
 
 case class Phenotypes(phenotypes: Seq[ActorRef])
+
+case class Best(genome: Genome, value: Double)

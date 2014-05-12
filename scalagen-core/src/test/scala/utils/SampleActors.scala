@@ -3,6 +3,7 @@ package utils
 import scalagen.genome.Genome
 import scalagen.actor._
 import akka.actor.ActorRef
+import scala.concurrent.duration.FiniteDuration
 
 object SampleActors {
 
@@ -58,6 +59,14 @@ object SampleActors {
     extends RandomKiller(randomKillRatio) {
     override def selectToKill(phenotypes: Seq[ActorRef]): Option[ActorRef] =
       if (phenotypes.size > 0) Some(phenotypes.last) else None
+  }
+
+  class TestEndOfAlgorithm extends EndOfAlgorithm {
+
+    override def isBetterValue(oldVal: Double, newVal: Double): Boolean = oldVal < newVal
+
+    override def shouldStopCalculations(value: Double): Boolean = value > 10
+
   }
 
 }
