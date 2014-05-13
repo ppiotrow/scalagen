@@ -17,7 +17,8 @@ object ScalagenBuild extends Build {
     .settings(
         name := "scalagen",
         version := "0.1.0-SNAPSHOT",
-        libraryDependencies++=Dependencies.core)
+        libraryDependencies++=Dependencies.core,
+        scalacOptions ++= Seq("-feature"))
 
 	lazy val example =  Project(
 		id = "scalagen-examples",
@@ -31,7 +32,9 @@ object ScalagenBuild extends Build {
   object Dependencies {
     object Compile {
       val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.3.2"
-      val apacheCommons =  "org.apache.commons" % "commons-lang3" % "3.0"
+      val apacheCommons = "org.apache.commons" % "commons-lang3" % "3.0"
+      val jodaTime = "joda-time" % "joda-time" % "2.3"
+      val jodaConvert = "org.joda" % "joda-convert" % "1.6"
     }
 
     object Test {
@@ -42,7 +45,7 @@ object ScalagenBuild extends Build {
 
     import Compile._
 
-    val core = Seq(akkaActor, Test.akkaTestkit, Test.scalaTest, Test.scalaCheck)
+    val core = Seq(akkaActor, jodaTime, jodaConvert, Test.akkaTestkit, Test.scalaTest, Test.scalaCheck)
     val examples = Seq(apacheCommons)
 
   }
