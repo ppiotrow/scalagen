@@ -44,7 +44,7 @@ with StopSystemAfterAll {
       var selectedBest: Option[(Genome, Double, DateTime)] = None
       import scala.concurrent.duration._
       val endOfAlgActor = TestActorRef(new TestEndOfAlgorithm {
-        override val maxTimeBetweenBetweenResults: FiniteDuration = 400 milliseconds
+        override val maxTimeBetweenImprovement: FiniteDuration = 400.milliseconds
         override def onFinish = {selectedBest = lastBestResult}
       })
 
@@ -53,7 +53,7 @@ with StopSystemAfterAll {
       endOfAlgActor ! Best(SampleGenome(Seq(1,1,0)), 2)
       endOfAlgActor ! Best(SampleGenome(Seq(1,1,5)), 7) //<- its the best genome
       endOfAlgActor ! Best(SampleGenome(Seq(1,0,5)), 6)
-      awaitCond(selectedBest != None, 1 second, 200 milliseconds)
+      awaitCond(selectedBest != None, 1.second, 200.milliseconds)
 
       selectedBest should be ('defined)
       val selectedBestResult = selectedBest map {_._2}
