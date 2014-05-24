@@ -61,7 +61,7 @@ abstract class EndOfAlgorithm extends Actor {
 
     def processBetterGenome(): Unit = {
       resetTimeout()
-      lastBestResult = Some(newGenome, newValue, new DateTime())
+      lastBestResult = Some((newGenome, newValue, DateTime.now()))
       if (shouldStopCalculations(newValue)) {
         finishAlgorithm()
       }

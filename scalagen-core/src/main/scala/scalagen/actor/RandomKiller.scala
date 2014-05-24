@@ -1,7 +1,9 @@
 package scalagen.actor
 
-import akka.actor.{ActorLogging, ActorRef, Actor}
-import scalagen.message.{Phenotypes, GetPhenotypes, Death, Kill}
+import akka.actor.{ActorRef, Actor}
+import scalagen.message._
+import scalagen.message.Kill
+import scalagen.message.Phenotypes
 
 object RandomKiller {
   def randomKillRatioMatches(deaths: Long,
@@ -23,7 +25,7 @@ abstract class RandomKiller(val randomKillRatio: Float) extends Actor {
    * @param phenotypes all living phenotypes
    * @return the phenotype to kill
    */
-  def selectToKill(phenotypes: Seq[ActorRef]): Option[ActorRef]
+  def selectToKill(phenotypes: Seq[Evaluated]): Option[ActorRef]
 
   var deaths: Long = 0
   var randomKills: Long = 0
@@ -41,6 +43,6 @@ abstract class RandomKiller(val randomKillRatio: Float) extends Actor {
         randomKills = 0
       }
     case Phenotypes(phenotypes) =>
-      selectToKill(phenotypes).foreach(sender ! Kill(_))
+      selectToKill(phenotypes).foreach(toBeKilled=>sender ! UpdatePopulation(Seq(), Seq(toBeKilled)))
   }
 }

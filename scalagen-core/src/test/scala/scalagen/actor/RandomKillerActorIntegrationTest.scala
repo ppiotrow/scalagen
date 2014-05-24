@@ -1,36 +1,38 @@
 package scalagen.actor
 
-import akka.testkit.{TestKit, ImplicitSender}
+import akka.testkit.{TestProbe, TestActorRef, TestKit, ImplicitSender}
 import akka.actor.{Props, ActorSystem}
 import org.scalatest._
 import utils.StopSystemAfterAll
-import utils.SampleActors.{TestGodfather, TestRandomKiller}
-import scalagen.message.{Phenotypes, Kill, GetPhenotypes}
+import utils.SampleActors.{TestEvaluator, TestControllerActor, TestGodfather, TestRandomKiller}
+import scalagen.message.{UpdatePopulation, Phenotypes, Kill, GetPhenotypes}
 import akka.pattern.ask
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.util.Timeout
 
 class RandomKillerActorIntegrationTest extends TestKit(ActorSystem("RandomKillerIntegrationTestActorSystem"))
-with ImplicitSender
 with WordSpecLike
 with ShouldMatchers
 with StopSystemAfterAll {
 
   "A RandomKill actor" must {
     "kill the last phenotype" in {
-      implicit val timeout = Timeout(1.seconds)
-      val deathItself = system.actorOf(Props[DeathItself])
-      val randomKiller = system.actorOf(Props(new TestRandomKiller(0.1f)))
-      val godfather = system.actorOf(Props(new TestGodfather(deathItself, randomKiller)))
+      val deathItself = TestActorRef(Props[DeathItself])
+      val randomKiller = TestActorRef(Props(new TestRandomKiller(0.1f)))
+      val controller = new TestProbe(system)
+      val evaluator = TestActorRef(new TestEvaluator)
+      val godfather = TestActorRef(Props(new TestGodfather(evaluator, deathItself, randomKiller, controller.ref)))
 
+      // Controller receives population after evaluation.
+      val phenotypes = controller.receiveOne(2.second).asInstanceOf[Phenotypes].phenotypes
       // Kill all the phenotypes except the last one
-      val future = godfather ? GetPhenotypes
-      val msg = Await.result(future.mapTo[Phenotypes], 1.second)
-      msg.phenotypes.init.foreach(godfather ! Kill(_))
+      godfather ! UpdatePopulation(Seq(), phenotypes.map(_.phenotype).init)
 
-      // The last phenotype should be killed by a random killer
-      awaitCond(Await.result((godfather ? GetPhenotypes).mapTo[Phenotypes], 1.second).phenotypes == Nil)
+      //Wait until RandomKiller kill the very last one phenotype
+      awaitCond(Await.result((godfather.ask(GetPhenotypes)(2.seconds)).mapTo[Phenotypes], 1.second).phenotypes == Nil,
+        max=2.seconds,
+      interval=1400.millis)
     }
   }
 }
