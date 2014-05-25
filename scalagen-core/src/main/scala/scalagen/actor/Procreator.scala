@@ -1,10 +1,21 @@
 package scalagen.actor
 
-import akka.actor.Actor
+import akka.actor.{ActorRef, Actor, FSM}
 import scalagen.genome.Genome
-import scalagen.message.{Descendant, Reproduce}
+import scalagen.message.{GenomeReaded, ReadGenom, Descendant}
 
-abstract class Procreator extends Actor {
+object Procreator {
+
+  sealed trait State
+  case object WaitingForGenomes extends State
+  case object OneGenomeLeft extends State
+
+  case class Data(firstGenome: Option[Genome])
+
+}
+
+abstract class Procreator(val male: ActorRef,
+                          val female: ActorRef) extends Actor with FSM[Procreator.State, Procreator.Data] {
 
   /**
    * The crossover step of a reproduction process.
@@ -21,9 +32,22 @@ abstract class Procreator extends Actor {
    */
   def mutate(genome: Genome): Genome
 
-  def receive = {
-    case Reproduce(genomeA, genomeB) =>
-      sender ! Descendant(mutate(recombine(genomeA, genomeB)))
+  override def preStart(): Unit= {
+    male ! ReadGenom
+    female ! ReadGenom
   }
 
+  startWith(Procreator.WaitingForGenomes, Procreator.Data(None))
+
+  when(Procreator.WaitingForGenomes) {
+    case Event(GenomeReaded(firstGenome), _) =>
+      goto(Procreator.OneGenomeLeft) using Procreator.Data(Some(firstGenome))
+  }
+
+  when(Procreator.OneGenomeLeft) {
+    case Event(GenomeReaded(secondGenome), _) =>
+      context.parent ! Descendant(mutate(recombine(stateData.firstGenome.get, secondGenome)))
+      stop
+  }
+  initialize()
 }

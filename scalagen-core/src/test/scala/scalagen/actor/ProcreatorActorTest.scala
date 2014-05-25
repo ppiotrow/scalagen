@@ -1,50 +1,54 @@
 package scalagen.actor
 
 import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
-import akka.actor.ActorSystem
+import akka.actor.{Props, ActorSystem}
 import org.scalatest.WordSpecLike
-import utils.StopSystemAfterAll
+import utils.{TestParentChildRelation, StopSystemAfterAll}
 import utils.SampleActors.{TestRecombineAndMutateProcreator, TestMutateProcreator, TestRecombineProcreator, SampleGenome}
-import scalagen.message.{Descendant, Reproduce}
+import scalagen.message.Descendant
 
 class ProcreatorActorTest extends TestKit(ActorSystem("ProcreatorTestActorSystem"))
 with ImplicitSender
 with WordSpecLike
-with StopSystemAfterAll {
+with StopSystemAfterAll
+with TestParentChildRelation {
 
   "A Procreator actor" must {
     "recombine the genome" in {
-      val sampleGenotypeA = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val sampleGenotypeB = SampleGenome(Seq(9, 8, 7, 6, 5))
-      val procreatorActorRef = TestActorRef[TestRecombineProcreator]
+      val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
+      val femaleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
 
-      procreatorActorRef ! Reproduce(sampleGenotypeA, sampleGenotypeB)
+      val male = TestActorRef(new Phenotype(maleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
+      val proxy = mockParentWithProbe(Props(new TestRecombineProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 5))
-      expectMsg(Descendant(expectedGenome))
+      proxy.expectMsg(Descendant(expectedGenome))
     }
 
     "mutate the genome" in {
-      val sampleGenotypeA = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val sampleGenotypeB = SampleGenome(Nil)
-      val procreatorActorRef = TestActorRef[TestMutateProcreator]
+      val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
+      val femaleGenotype = SampleGenome(Nil)
 
-      procreatorActorRef ! Reproduce(sampleGenotypeA, sampleGenotypeB)
+      val male = TestActorRef(new Phenotype(maleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
+      val proxy = mockParentWithProbe(Props(new TestMutateProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 3, 7, 2))
-      expectMsg(Descendant(expectedGenome))
+      proxy.expectMsg(Descendant(expectedGenome))
     }
 
     "recombine and mutate the genome" in {
-      val sampleGenotypeA = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val sampleGenotypeB = SampleGenome(Seq(9, 8, 7, 6, 5))
-      val procreatorActorRef = TestActorRef[TestRecombineAndMutateProcreator]
+      val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
+      val femaleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
 
-      procreatorActorRef ! Reproduce(sampleGenotypeA, sampleGenotypeB)
+      val male = TestActorRef(new Phenotype(maleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
+      val proxy = mockParentWithProbe(Props(new TestRecombineAndMutateProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 6))
-      expectMsg(Descendant(expectedGenome))
+      proxy.expectMsg(Descendant(expectedGenome))
     }
-  }
 
+  }
 }

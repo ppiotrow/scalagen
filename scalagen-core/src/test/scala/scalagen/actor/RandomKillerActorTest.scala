@@ -4,8 +4,11 @@ import akka.testkit.{TestActorRef, ImplicitSender, TestKit}
 import akka.actor.ActorSystem
 import org.scalatest.{ShouldMatchers, WordSpecLike}
 import utils.StopSystemAfterAll
-import utils.SampleActors.{SampleGenome, TestRandomKiller}
-import scalagen.message.{Phenotypes, GetPhenotypes, Death, Kill}
+import utils.SampleActors.{TestRandomKiller}
+import scalagen.message._
+import scalagen.message.Kill
+import utils.SampleActors.SampleGenome
+import scalagen.message.Phenotypes
 
 class RandomKillerActorTest extends TestKit(ActorSystem("RandomKillTestActorSystem"))
 with ImplicitSender
@@ -27,9 +30,11 @@ with StopSystemAfterAll {
       val firstPhenotype = TestActorRef(new Phenotype(SampleGenome(Seq(1337))))
       val secondPhenotype = TestActorRef(new Phenotype(SampleGenome(Seq(7331))))
 
-      randomKiller ! Phenotypes(Seq(firstPhenotype, secondPhenotype))
+      randomKiller ! Phenotypes(Seq(
+        Evaluated(firstPhenotype, 2),
+        Evaluated(secondPhenotype,1)))
 
-      expectMsg(Kill(secondPhenotype))
+      expectMsg(UpdatePopulation(Seq(), Seq(secondPhenotype)))
     }
   }
 
