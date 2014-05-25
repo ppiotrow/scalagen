@@ -74,17 +74,17 @@ object SampleActors {
   class TestControllerActor extends Controller {
     override def selectToBeKilled(howMany: Int, phenotypes: Seq[Evaluated]): Seq[ActorRef] = {
       val sortedPhenotypes =phenotypes.sortBy(_.value)
-      sortedPhenotypes.take(howMany).map {_.phenotype}
+      sortedPhenotypes.take(howMany).map(_.phenotype)
     }
 
-    override def selectCopules(howMany: Int, phenotypes: Seq[Evaluated]): Seq[(ActorRef, ActorRef)] = {
+    override def selectCouples(howMany: Int, phenotypes: Seq[Evaluated]): Seq[(ActorRef, ActorRef)] = {
       val sortedPhenotypes = phenotypes.sortBy(_.value).reverse.map {_.phenotype}
-      val sampleCopules = for {
+      val sampleCouples = for {
         male<-sortedPhenotypes
         female<-sortedPhenotypes
         if(male!=female)
       } yield (male, female)
-      sampleCopules.take(howMany)
+      sampleCouples.take(howMany)
     }
   }
 

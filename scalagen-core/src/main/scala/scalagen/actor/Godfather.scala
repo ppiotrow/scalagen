@@ -1,14 +1,10 @@
 package scalagen.actor
 
-import akka.actor._
+import akka.actor.{Actor, ActorRef, Props}
 import scalagen.genome.Genome
 import scalagen.message._
-import scalagen.message.UpdatePopulation
-import scalagen.message.Eval
-import scalagen.message.Kill
-import scalagen.message.Evaluated
-import scalagen.message.Phenotypes
 import scala.collection.immutable.{HashSet, HashMap}
+import akka.actor.Terminated
 
 /**
  * The parent of all phenotypes.
@@ -24,8 +20,8 @@ abstract class Godfather(val evaluator: ActorRef,
   override def receive = {
     case GetPhenotypes =>
       sender ! Phenotypes(phenotypes.values.toList)
-    case UpdatePopulation(copules, toBeKilled) =>
-      updatePopulation(copules, toBeKilled)
+    case UpdatePopulation(couples, toBeKilled) =>
+      updatePopulation(couples, toBeKilled)
     case evaluated@Evaluated(_, _) =>
       updateEvaluatedData(evaluated)
       if (shouldInformController) informController()
@@ -41,9 +37,9 @@ abstract class Godfather(val evaluator: ActorRef,
 
   def procreatorFactory(male: ActorRef, female: ActorRef): Procreator
 
-  def updatePopulation(copules: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef]) = {
+  def updatePopulation(couples: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef]) = {
     toBeKilled.foreach(killPhenotype(_))
-    copules.foreach(procreate(_))
+    couples.foreach(procreate(_))
   }
 
   def procreate(parents: (ActorRef, ActorRef)): Unit = {
@@ -63,9 +59,7 @@ abstract class Godfather(val evaluator: ActorRef,
   }
 
   override def preStart: Unit = {
-    initialGenomes.map {
-      startNewPhenotype(_)
-    }
+    initialGenomes.map(startNewPhenotype _)
   }
 
   /**

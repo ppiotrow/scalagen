@@ -1,15 +1,14 @@
 package scalagen.actor
 
-import akka.testkit.{TestProbe, TestActorRef, TestKit, ImplicitSender}
+import akka.testkit.{TestProbe, TestActorRef, TestKit}
 import akka.actor.{Props, ActorSystem}
 import org.scalatest._
 import utils.StopSystemAfterAll
-import utils.SampleActors.{TestEvaluator, TestControllerActor, TestGodfather, TestRandomKiller}
-import scalagen.message.{UpdatePopulation, Phenotypes, Kill, GetPhenotypes}
+import utils.SampleActors.{TestEvaluator, TestGodfather, TestRandomKiller}
+import scalagen.message.{UpdatePopulation, Phenotypes, GetPhenotypes}
 import akka.pattern.ask
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import akka.util.Timeout
 
 class RandomKillerActorIntegrationTest extends TestKit(ActorSystem("RandomKillerIntegrationTestActorSystem"))
 with WordSpecLike

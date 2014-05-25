@@ -6,13 +6,13 @@ import akka.actor.ActorRef
 
 trait PopulationKilling {
   /**
-   * Represents strategy on selection copules from evaluated phenotypes.
+   * Represents strategy on selection couples from evaluated phenotypes.
    *
-   * @param howMany How many copules should be created
+   * @param howMany How many couples should be created
    * @param phenotypes Evaluated phenotypes
-   * @return copules as parents collection
+   * @return couples as parents collection
    */
-  def selectCopules(howMany: Int, phenotypes: Seq[Evaluated]): Seq[(ActorRef, ActorRef)]
+  def selectCouples(howMany: Int, phenotypes: Seq[Evaluated]): Seq[(ActorRef, ActorRef)]
 }
 
 trait PopulationReproduction {

@@ -16,10 +16,10 @@ with TestParentChildRelation {
   "A Procreator actor" must {
     "recombine the genome" in {
       val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val femaleleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
+      val femaleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
 
       val male = TestActorRef(new Phenotype(maleGenotype))
-      val female = TestActorRef(new Phenotype(femaleleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
       val proxy = mockParentWithProbe(Props(new TestRecombineProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 5))
@@ -28,10 +28,10 @@ with TestParentChildRelation {
 
     "mutate the genome" in {
       val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val femaleleGenotype = SampleGenome(Nil)
+      val femaleGenotype = SampleGenome(Nil)
 
       val male = TestActorRef(new Phenotype(maleGenotype))
-      val female = TestActorRef(new Phenotype(femaleleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
       val proxy = mockParentWithProbe(Props(new TestMutateProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 3, 7, 2))
@@ -40,10 +40,10 @@ with TestParentChildRelation {
 
     "recombine and mutate the genome" in {
       val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
-      val femaleleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
+      val femaleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
 
       val male = TestActorRef(new Phenotype(maleGenotype))
-      val female = TestActorRef(new Phenotype(femaleleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
       val proxy = mockParentWithProbe(Props(new TestRecombineAndMutateProcreator(male, female)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 6))

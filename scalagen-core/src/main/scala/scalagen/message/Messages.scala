@@ -23,4 +23,4 @@ case class Phenotypes(phenotypes: Seq[Evaluated])
 
 case class Best(genome: Genome, value: Double)
 
-case class UpdatePopulation(copules: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef])
+case class UpdatePopulation(couples: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef])
