@@ -1,6 +1,7 @@
 package scalagen.actor
 
 import akka.actor.{ActorRef, Actor, FSM}
+import scala.concurrent.duration.DurationInt
 import scalagen.genome.Genome
 import scalagen.message.{GenomeReaded, ReadGenom, Descendant}
 
@@ -32,6 +33,11 @@ abstract class Procreator(val male: ActorRef,
    */
   def mutate(genome: Genome): Genome
 
+  /** An timeout from creation or from receiving first genome after procreator stops waiting for genomes
+    * and do not create new genome
+    */
+  val waitForGenomeTimeout = 3.seconds
+
   override def preStart(): Unit= {
     male ! ReadGenom
     female ! ReadGenom
@@ -39,14 +45,18 @@ abstract class Procreator(val male: ActorRef,
 
   startWith(Procreator.WaitingForGenomes, Procreator.Data(None))
 
-  when(Procreator.WaitingForGenomes) {
+  when(Procreator.WaitingForGenomes, waitForGenomeTimeout) {
     case Event(GenomeReaded(firstGenome), _) =>
       goto(Procreator.OneGenomeLeft) using Procreator.Data(Some(firstGenome))
+    case Event(StateTimeout, _) =>
+      stop
   }
 
-  when(Procreator.OneGenomeLeft) {
+  when(Procreator.OneGenomeLeft, waitForGenomeTimeout) {
     case Event(GenomeReaded(secondGenome), _) =>
       context.parent ! Descendant(mutate(recombine(stateData.firstGenome.get, secondGenome)))
+      stop
+    case Event(StateTimeout, _) =>
       stop
   }
   initialize()
