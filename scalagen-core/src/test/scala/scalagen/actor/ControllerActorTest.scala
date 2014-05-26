@@ -18,8 +18,9 @@ with StopSystemAfterAll {
   "A Controller actor" must {
     " update a population" in {
       val sampleGenotype = Seq(1, 0, 1, 2)
-      val evaluated = Seq.tabulate(5) {
-        n => Evaluated(TestActorRef(new Phenotype(new SampleGenome(n +: sampleGenotype))), n + 4)
+      val evaluated = Seq.tabulate(5) { n =>
+        val genome: SampleGenome = new SampleGenome(n +: sampleGenotype)
+        Evaluated(TestActorRef(new Phenotype(genome)), genome, n + 4)
       }.reverse
       val controller = TestActorRef(new TestControllerActor {
         override def optimalPopulationSize: Int = 5

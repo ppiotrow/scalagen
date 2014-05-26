@@ -4,7 +4,7 @@ import akka.testkit.{TestProbe, TestActorRef, TestKit}
 import akka.actor.{Props, ActorSystem}
 import org.scalatest._
 import utils.StopSystemAfterAll
-import utils.SampleActors.{TestEvaluator, TestGodfather, TestRandomKiller}
+import utils.SampleActors.{TestEndOfAlgorithm, TestEvaluator, TestGodfather, TestRandomKiller}
 import scalagen.message.{UpdatePopulation, Phenotypes, GetPhenotypes}
 import akka.pattern.ask
 import scala.concurrent.Await
@@ -21,7 +21,9 @@ with StopSystemAfterAll {
       val randomKiller = TestActorRef(Props(new TestRandomKiller(0.1f)))
       val controller = new TestProbe(system)
       val evaluator = TestActorRef(new TestEvaluator)
-      val godfather = TestActorRef(Props(new TestGodfather(evaluator, deathItself, randomKiller, controller.ref)))
+      val endOfAlgorithm = TestActorRef(Props[TestEndOfAlgorithm])
+      val godfather = TestActorRef(Props(
+        new TestGodfather(evaluator, deathItself, randomKiller, controller.ref, endOfAlgorithm)))
 
       // Controller receives population after evaluation.
       val phenotypes = controller.receiveOne(2.second).asInstanceOf[Phenotypes].phenotypes

@@ -12,8 +12,8 @@ import akka.actor.Terminated
 abstract class Godfather(val evaluator: ActorRef,
                          val deathItself: ActorRef,
                          val randomKiller: ActorRef,
-                         val controller: ActorRef
-                          ) extends Actor {
+                         val controller: ActorRef,
+                         val endOfAlgorithm: ActorRef) extends Actor {
   var phenotypes = new HashMap[ActorRef, Evaluated]()
   var phenotypesToEvaluate = new HashSet[ActorRef]()
 
@@ -22,7 +22,7 @@ abstract class Godfather(val evaluator: ActorRef,
       sender ! Phenotypes(phenotypes.values.toList)
     case UpdatePopulation(couples, toBeKilled) =>
       updatePopulation(couples, toBeKilled)
-    case evaluated@Evaluated(_, _) =>
+    case evaluated@Evaluated(_, _, _) =>
       updateEvaluatedData(evaluated)
       if (shouldInformController) informController()
     case Descendant(genome) =>
@@ -56,6 +56,7 @@ abstract class Godfather(val evaluator: ActorRef,
   def updateEvaluatedData(evaluated: Evaluated): Unit = {
     phenotypesToEvaluate -= evaluated.phenotype
     phenotypes += ((evaluated.phenotype, evaluated))
+    endOfAlgorithm ! Best(evaluated.genome, evaluated.value)
   }
 
   override def preStart: Unit = {

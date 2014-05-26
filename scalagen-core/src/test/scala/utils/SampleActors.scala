@@ -47,8 +47,12 @@ object SampleActors {
       SampleOperators.mutate(genome)
   }
 
-  class TestGodfather(evaluator: ActorRef, deathItself: ActorRef, randomKiller: ActorRef, controller: ActorRef)
-    extends Godfather(evaluator, deathItself, randomKiller, controller) {
+  class TestGodfather(evaluator: ActorRef,
+                      deathItself: ActorRef,
+                      randomKiller: ActorRef,
+                      controller: ActorRef,
+                      endOfAlgorithm: ActorRef)
+    extends Godfather(evaluator, deathItself, randomKiller, controller, endOfAlgorithm) {
     override def initialGenomes: Seq[Genome] =
       List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
 

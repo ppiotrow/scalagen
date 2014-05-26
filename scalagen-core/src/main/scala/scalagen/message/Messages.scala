@@ -13,7 +13,7 @@ case class GenomeReaded(genotype: Genome)
 
 case class Eval(phenotype: ActorRef, genotype: Genome)
 
-case class Evaluated(phenotype: ActorRef, value: Double)
+case class Evaluated(phenotype: ActorRef, genome: Genome, value: Double)
 
 case class Descendant(genome: Genome)
 
