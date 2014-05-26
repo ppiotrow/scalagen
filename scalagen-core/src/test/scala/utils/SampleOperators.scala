@@ -2,6 +2,7 @@ package utils
 
 import scalagen.genome.Genome
 import utils.SampleActors.SampleGenome
+import scalagen.population.PhenotypeValueComparator
 
 object SampleOperators {
 
@@ -17,4 +18,8 @@ object SampleOperators {
     new SampleGenome(chromosomesA.take(half) ++ chromosomesB.drop(half))
   }
 
+}
+
+trait TestPhenotypeValueComparator extends PhenotypeValueComparator {
+  override def isBetterValue(oldVal: Double, newVal: Double): Boolean = oldVal < newVal
 }

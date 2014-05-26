@@ -4,7 +4,7 @@ import scalagen.message.Evaluated
 import akka.actor.ActorRef
 
 
-trait PopulationKilling {
+trait PopulationReproduction {
   /**
    * Represents strategy on selection couples from evaluated phenotypes.
    *
@@ -15,7 +15,7 @@ trait PopulationKilling {
   def selectCouples(howMany: Int, phenotypes: Seq[Evaluated]): Seq[(ActorRef, ActorRef)]
 }
 
-trait PopulationReproduction {
+trait PopulationKilling {
   /**
    * Represents strategy on selection phenotypes to be killed.
    *
@@ -24,4 +24,11 @@ trait PopulationReproduction {
    * @return phenotypes to be killed
    */
   def selectToBeKilled(howMany: Int, phenotypes: Seq[Evaluated]): Seq[ActorRef]
+}
+
+trait KillTheWorsts extends PopulationKilling with PhenotypeValueComparator {
+  override def selectToBeKilled(howMany: Int, phenotypes: Seq[Evaluated]) = {
+    val sorted = phenotypes.sortWith((e1, e2) => isBetterValue(e1.value, e2.value))
+    sorted.map(_.phenotype).take(howMany)
+  }
 }
