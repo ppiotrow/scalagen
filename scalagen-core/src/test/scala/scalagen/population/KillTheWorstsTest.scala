@@ -3,7 +3,7 @@ package scalagen.population
 import org.scalatest.{ShouldMatchers, WordSpecLike}
 import scalagen.message.Evaluated
 import utils.TestPhenotypeValueComparator
-import akka.testkit.{TestKit, TestActorRef, TestProbe}
+import akka.testkit.{TestKit, TestActorRef}
 import scalagen.actor.Phenotype
 import utils.SampleActors.SampleGenome
 import akka.actor.ActorSystem
@@ -28,11 +28,10 @@ with WordSpecLike  {
 
       val toBeKilled = strategy.selectToBeKilled(3, phenotypes)
 
-      toBeKilled.size should be(3)
-      assert(toBeKilled.contains(phenotypes(0).phenotype))
-      assert(toBeKilled.contains(phenotypes(1).phenotype))
-      assert(toBeKilled.contains(phenotypes(3).phenotype))
-
+      toBeKilled should have length 3
+      toBeKilled should contain (phenotypes(0).phenotype)
+      toBeKilled should contain (phenotypes(1).phenotype)
+      toBeKilled should contain (phenotypes(3).phenotype)
     }
 
     "select 0 worst phenotypes to kill from non empty collection" in {
@@ -51,7 +50,7 @@ with WordSpecLike  {
 
       val toBeKilled = strategy.selectToBeKilled(0, phenotypes)
 
-      toBeKilled.size should be(0)
+      toBeKilled should have length 0
     }
 
     "select 0 worst phenotypes to kill from empty collection" in {
@@ -61,7 +60,7 @@ with WordSpecLike  {
 
       val toBeKilled = strategy.selectToBeKilled(0, phenotypes)
 
-      toBeKilled.size should be(0)
+      toBeKilled should have length 0
     }
   }
 
