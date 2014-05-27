@@ -14,7 +14,7 @@ abstract class Evaluator extends Actor {
   def receive = {
     case Eval(phenotype, genome) => {
       val phenotypeValue = eval(genome)
-      sender ! Evaluated(phenotype, phenotypeValue)
+      sender ! Evaluated(phenotype, genome, phenotypeValue)
     }
   }
 }

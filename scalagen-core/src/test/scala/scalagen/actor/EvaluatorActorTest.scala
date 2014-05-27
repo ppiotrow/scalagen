@@ -18,7 +18,7 @@ with StopSystemAfterAll {
       val evaluator = TestActorRef(new TestEvaluator)
       val testPhenotype = TestActorRef(new Phenotype(sampleGenotype))
       evaluator ! Eval(testPhenotype, sampleGenotype)
-      expectMsg(Evaluated(testPhenotype, 20))
+      expectMsg(Evaluated(testPhenotype, sampleGenotype, 20))
     }
   }
 }

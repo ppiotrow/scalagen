@@ -27,12 +27,14 @@ with StopSystemAfterAll {
 
     "kill a phenotype when received a list of phenotypes" in {
       val randomKiller = TestActorRef(new TestRandomKiller(0.1f))
-      val firstPhenotype = TestActorRef(new Phenotype(SampleGenome(Seq(1337))))
-      val secondPhenotype = TestActorRef(new Phenotype(SampleGenome(Seq(7331))))
+      val firstGenome: SampleGenome = SampleGenome(Seq(1337))
+      val firstPhenotype = TestActorRef(new Phenotype(firstGenome))
+      val secondGenome: SampleGenome = SampleGenome(Seq(7331))
+      val secondPhenotype = TestActorRef(new Phenotype(secondGenome))
 
       randomKiller ! Phenotypes(Seq(
-        Evaluated(firstPhenotype, 2),
-        Evaluated(secondPhenotype,1)))
+        Evaluated(firstPhenotype, firstGenome, 2),
+        Evaluated(secondPhenotype, secondGenome, 1)))
 
       expectMsg(UpdatePopulation(Seq(), Seq(secondPhenotype)))
     }
