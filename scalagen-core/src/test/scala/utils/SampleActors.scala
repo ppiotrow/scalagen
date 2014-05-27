@@ -3,15 +3,13 @@ package utils
 import scalagen.genome.Genome
 import scalagen.actor._
 import akka.actor.ActorRef
-import scala.concurrent.duration.FiniteDuration
 import scalagen.message.Evaluated
-import scalagen.population.PhenotypeValueComparator
 
 object SampleActors {
 
   case class SampleGenome(chromosomes: Seq[Int]) extends Genome
 
-  class TestEvaluator extends Evaluator {
+  class TestEvaluator(endOfAlgorithm: ActorRef) extends Evaluator(endOfAlgorithm) with TestPhenotypeValueComparator {
     def eval(genome: Genome): Double = genome.asInstanceOf[SampleGenome].chromosomes.sum
   }
 
@@ -48,7 +46,10 @@ object SampleActors {
       SampleOperators.mutate(genome)
   }
 
-  class TestGodfather(evaluator: ActorRef, deathItself: ActorRef, randomKiller: ActorRef, controller: ActorRef)
+  class TestGodfather(evaluator: ActorRef,
+                      deathItself: ActorRef,
+                      randomKiller: ActorRef,
+                      controller: ActorRef)
     extends Godfather(evaluator, deathItself, randomKiller, controller) {
     override def initialGenomes: Seq[Genome] =
       List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
