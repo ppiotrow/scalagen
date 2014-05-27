@@ -31,22 +31,21 @@ object ScalagenBuild extends Build {
 
   object Dependencies {
     object Compile {
-      val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.3.2"
-      val apacheCommons = "org.apache.commons" % "commons-lang3" % "3.0"
+      val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.3.3"
       val jodaTime = "joda-time" % "joda-time" % "2.3"
       val jodaConvert = "org.joda" % "joda-convert" % "1.6"
     }
 
     object Test {
-      val akkaTestkit ="com.typesafe.akka" %% "akka-testkit" % "2.3.2" % "test"
-      val scalaTest = "org.scalatest" %% "scalatest" % "2.1.4" % "test"
-      val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
+      val akkaTestkit ="com.typesafe.akka" %% "akka-testkit" % "2.3.3" % "test"
+      val scalaTest = "org.scalatest" %% "scalatest" % "2.2.0-M1" % "test"
+      val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.4" % "test"
     }
 
     import Compile._
 
     val core = Seq(akkaActor, jodaTime, jodaConvert, Test.akkaTestkit, Test.scalaTest, Test.scalaCheck)
-    val examples = Seq(apacheCommons)
+    val examples = Seq()
 
   }
 }
