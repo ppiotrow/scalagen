@@ -85,6 +85,10 @@ object SampleActors {
       } yield (male, female)
       sampleCouples.take(howMany)
     }
+
+    override def optimalPopulationSize: Int = 50
+
+    override def maxToKillOrCreate: Int = 10
   }
 
 }

@@ -42,9 +42,9 @@ abstract class Controller extends Actor with PopulationReproduction with Populat
       sender ! UpdatePopulation(couples, toBeKilled)
   }
 
-  def optimalPopulationSize: Int = ???
+  def optimalPopulationSize: Int
 
-  def maxToKillOrCreate: Int = ???
+  def maxToKillOrCreate: Int
 
   def updatePopulation(currentPopulation: Seq[Evaluated]) = {
     val (numberToKill, numberToCreate) = calculatePopulationChange(currentPopulation.size)
