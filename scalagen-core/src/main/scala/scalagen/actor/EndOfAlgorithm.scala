@@ -5,6 +5,7 @@ import scalagen.message.Best
 import scalagen.genome.Genome
 import scala.concurrent.duration._
 import org.joda.time.DateTime
+import scalagen.population.PhenotypeValueComparator
 
 /**
  * An actor to determine, when the algorithm should ends.
@@ -12,7 +13,7 @@ import org.joda.time.DateTime
  * When it gets genome with note satisfying isGoodEnough method it stops algorithm.
  * It also has timer to indicate when the last time it got improved result.
  */
-abstract class EndOfAlgorithm extends Actor {
+abstract class EndOfAlgorithm extends Actor with PhenotypeValueComparator {
   var lastBestResult: Option[(Genome, Double, DateTime)] = None
   var timeout: Cancellable = _
   val maxTimeBetweenImprovement: FiniteDuration = 30.seconds
@@ -23,13 +24,6 @@ abstract class EndOfAlgorithm extends Actor {
     case Best(genome, value) => processBestGenomeCandidate(genome, value)
     case ResultTimeoutPassed => finishAlgorithm()
   }
-
-  /**
-   * An function to determine if received value is better than current.
-   * Example:
-   * override def isBetterValue(currentValue: Double, newValue: Double) = currentValue < newValue
-   */
-  def isBetterValue(currentValue: Double, newValue: Double): Boolean
 
   /**
    * An function to determine if calculation should be stopped.

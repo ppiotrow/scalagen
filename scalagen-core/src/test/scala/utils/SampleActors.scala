@@ -5,6 +5,7 @@ import scalagen.actor._
 import akka.actor.ActorRef
 import scala.concurrent.duration.FiniteDuration
 import scalagen.message.Evaluated
+import scalagen.population.PhenotypeValueComparator
 
 object SampleActors {
 
@@ -63,9 +64,7 @@ object SampleActors {
       if (phenotypes.size > 0) Some(phenotypes.last.phenotype) else None
   }
 
-  class TestEndOfAlgorithm extends EndOfAlgorithm {
-
-    override def isBetterValue(oldVal: Double, newVal: Double): Boolean = oldVal < newVal
+  class TestEndOfAlgorithm extends EndOfAlgorithm with TestPhenotypeValueComparator {
 
     override def shouldStopCalculations(value: Double): Boolean = value > 10
 
