@@ -16,7 +16,6 @@ with StopSystemAfterAll {
 
   "A EndOfAlgorithm actor" must {
     "receive the best genome" in {
-      val evaluator = system.actorOf(Props[TestEvaluator], "evaluator")
       val deathItself = system.actorOf(Props[DeathItself], "death-itself")
       val randomKiller = system.actorOf(Props(new TestRandomKiller(0.1f)), "random-killer")
       val controller = system.actorOf(Props(new TestControllerActor {
@@ -33,10 +32,11 @@ with StopSystemAfterAll {
 
         override def shouldStopCalculations(value: Double): Boolean = value >= expectedValue
       }), "end-of-algorithm")
+      val evaluator = system.actorOf(Props(new TestEvaluator(endOfAlgorithm)), "evaluator")
 
       watch(endOfAlgorithm)
       system.actorOf(Props(
-        new TestGodfather(evaluator, deathItself, randomKiller, controller, endOfAlgorithm) {
+        new TestGodfather(evaluator, deathItself, randomKiller, controller) {
           // It should be easy to find genome greater or equal 8 with 7 and 5 as starting values
           override def initialGenomes = {
             Seq(SampleGenome(Seq(7)), SampleGenome(Seq(5)))

@@ -19,8 +19,7 @@ import scalagen.message.Descendant
 abstract class Godfather(val evaluator: ActorRef,
                          val deathItself: ActorRef,
                          val randomKiller: ActorRef,
-                         val controller: ActorRef,
-                         val endOfAlgorithm: ActorRef) extends Actor {
+                         val controller: ActorRef) extends Actor {
   var phenotypes = new HashMap[ActorRef, Evaluated]()
   var phenotypesToEvaluate = new HashSet[ActorRef]()
 
@@ -36,8 +35,6 @@ abstract class Godfather(val evaluator: ActorRef,
       startNewPhenotype(genome)
     case Terminated(phenotype) =>
       randomKiller ! Death
-    case best@Best(_, _) =>
-      endOfAlgorithm ! best
   }
 
   def initialGenomes: Seq[Genome]
