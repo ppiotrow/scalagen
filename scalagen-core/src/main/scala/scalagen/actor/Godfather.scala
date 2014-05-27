@@ -1,10 +1,17 @@
 package scalagen.actor
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor._
 import scalagen.genome.Genome
 import scalagen.message._
 import scala.collection.immutable.{HashSet, HashMap}
+import scalagen.message.UpdatePopulation
+import scalagen.message.Best
+import scalagen.message.Eval
+import scalagen.message.Kill
 import akka.actor.Terminated
+import scalagen.message.Evaluated
+import scalagen.message.Phenotypes
+import scalagen.message.Descendant
 
 /**
  * The parent of all phenotypes.
@@ -12,8 +19,8 @@ import akka.actor.Terminated
 abstract class Godfather(val evaluator: ActorRef,
                          val deathItself: ActorRef,
                          val randomKiller: ActorRef,
-                         val controller: ActorRef
-                          ) extends Actor {
+                         val controller: ActorRef,
+                         val endOfAlgorithm: ActorRef) extends Actor {
   var phenotypes = new HashMap[ActorRef, Evaluated]()
   var phenotypesToEvaluate = new HashSet[ActorRef]()
 
@@ -29,6 +36,8 @@ abstract class Godfather(val evaluator: ActorRef,
       startNewPhenotype(genome)
     case Terminated(phenotype) =>
       randomKiller ! Death
+    case best@Best(_, _) =>
+      endOfAlgorithm ! best
   }
 
   def initialGenomes: Seq[Genome]
