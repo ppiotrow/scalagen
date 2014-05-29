@@ -2,7 +2,6 @@ package scalagen.population
 
 import org.scalatest.{ShouldMatchers, WordSpecLike}
 import scalagen.message.Evaluated
-import utils.TestPhenotypeValueComparator
 import akka.testkit.{TestKit, TestActorRef}
 import scalagen.actor.Phenotype
 import utils.SampleActors.SampleGenome
@@ -25,7 +24,7 @@ with WordSpecLike  {
         Evaluated(phenotype4, 1),
         Evaluated(phenotype5, 1337)
       )
-      val strategy = new RouletteWheelReproduction with TestPhenotypeValueComparator
+      val strategy = new RouletteWheelReproduction with MaximizeValue
 
       val couples = strategy.selectCouples(3, phenotypes)
 
@@ -40,7 +39,7 @@ with WordSpecLike  {
         Evaluated(phenotype1, 5),
         Evaluated(phenotype2, 2),
         Evaluated(phenotype3, 10))
-      val strategy = new RouletteWheelReproduction with TestPhenotypeValueComparator
+      val strategy = new RouletteWheelReproduction with MaximizeValue
 
       val couples = strategy.selectCouples(0, phenotypes)
 
@@ -51,7 +50,7 @@ with WordSpecLike  {
     "select 0 couples from empty collection" in {
 
       val phenotypes = Seq[Evaluated]()
-      val strategy = new RouletteWheelReproduction with TestPhenotypeValueComparator
+      val strategy = new RouletteWheelReproduction with MaximizeValue
 
       val couples = strategy.selectCouples(0, phenotypes)
 

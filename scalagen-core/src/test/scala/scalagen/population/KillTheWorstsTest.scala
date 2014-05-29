@@ -2,7 +2,6 @@ package scalagen.population
 
 import org.scalatest.{ShouldMatchers, WordSpecLike}
 import scalagen.message.Evaluated
-import utils.TestPhenotypeValueComparator
 import akka.testkit.{TestKit, TestActorRef}
 import scalagen.actor.Phenotype
 import utils.SampleActors.SampleGenome
@@ -24,7 +23,7 @@ with WordSpecLike  {
         Evaluated(mockRef3, 1),
         Evaluated(mockBetter, 1337)
       )
-      val strategy = new KillTheWorsts with TestPhenotypeValueComparator
+      val strategy = new KillTheWorsts with MaximizeValue
 
       val toBeKilled = strategy.selectToBeKilled(3, phenotypes)
 
@@ -46,7 +45,7 @@ with WordSpecLike  {
         Evaluated(mockRef3, 1),
         Evaluated(mockBetter, 1337)
       )
-      val strategy = new KillTheWorsts with TestPhenotypeValueComparator
+      val strategy = new KillTheWorsts with MaximizeValue
 
       val toBeKilled = strategy.selectToBeKilled(0, phenotypes)
 
@@ -56,7 +55,7 @@ with WordSpecLike  {
     "select 0 worst phenotypes to kill from empty collection" in {
 
       val phenotypes = Seq[Evaluated]()
-      val strategy = new KillTheWorsts with TestPhenotypeValueComparator
+      val strategy = new KillTheWorsts with MaximizeValue
 
       val toBeKilled = strategy.selectToBeKilled(0, phenotypes)
 
