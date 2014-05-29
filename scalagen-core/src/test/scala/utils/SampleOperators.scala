@@ -19,7 +19,3 @@ object SampleOperators {
   }
 
 }
-
-trait TestPhenotypeValueComparator extends PhenotypeValueComparator {
-  override def isBetterValue(oldVal: Double, newVal: Double): Boolean = oldVal < newVal
-}

@@ -9,3 +9,11 @@ trait PhenotypeValueComparator {
    */
   def isBetterValue(currentValue: Double, newValue: Double): Boolean
 }
+
+trait MaximizeValue extends PhenotypeValueComparator {
+  override def isBetterValue(currentValue: Double, newValue: Double) = currentValue < newValue
+}
+
+trait MinimizeValue extends PhenotypeValueComparator {
+  override def isBetterValue(currentValue: Double, newValue: Double) = currentValue > newValue
+}

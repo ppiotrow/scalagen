@@ -4,12 +4,13 @@ import scalagen.genome.Genome
 import scalagen.actor._
 import akka.actor.ActorRef
 import scalagen.message.Evaluated
+import scalagen.population.MaximizeValue
 
 object SampleActors {
 
   case class SampleGenome(chromosomes: Seq[Int]) extends Genome
 
-  class TestEvaluator(endOfAlgorithm: ActorRef) extends Evaluator(endOfAlgorithm) with TestPhenotypeValueComparator {
+  class TestEvaluator(endOfAlgorithm: ActorRef) extends Evaluator(endOfAlgorithm) with MaximizeValue {
     def eval(genome: Genome): Double = genome.asInstanceOf[SampleGenome].chromosomes.sum
   }
 
@@ -65,10 +66,8 @@ object SampleActors {
       if (phenotypes.size > 0) Some(phenotypes.last.phenotype) else None
   }
 
-  class TestEndOfAlgorithm extends EndOfAlgorithm with TestPhenotypeValueComparator {
-
+  class TestEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
     override def shouldStopCalculations(value: Double): Boolean = value > 10
-
   }
 
   class TestControllerActor extends Controller {
