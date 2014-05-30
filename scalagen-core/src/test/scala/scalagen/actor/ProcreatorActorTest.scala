@@ -22,7 +22,7 @@ with TestParentChildRelation {
 
       val male = TestActorRef(new Phenotype(maleGenotype))
       val female = TestActorRef(new Phenotype(femaleGenotype))
-      val proxy = mockParentWithProbe(Props(new TestRecombineProcreator(male, female)))
+      val proxy = mockParentWithProbe(Props(new TestRecombineProcreator(male, female, 1.0)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 5))
       proxy.expectMsg(Descendant(expectedGenome))
@@ -34,7 +34,7 @@ with TestParentChildRelation {
 
       val male = TestActorRef(new Phenotype(maleGenotype))
       val female = TestActorRef(new Phenotype(femaleGenotype))
-      val proxy = mockParentWithProbe(Props(new TestMutateProcreator(male, female)))
+      val proxy = mockParentWithProbe(Props(new TestMutateProcreator(male, female, 1.0)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 3, 7, 2))
       proxy.expectMsg(Descendant(expectedGenome))
@@ -46,15 +46,27 @@ with TestParentChildRelation {
 
       val male = TestActorRef(new Phenotype(maleGenotype))
       val female = TestActorRef(new Phenotype(femaleGenotype))
-      val proxy = mockParentWithProbe(Props(new TestRecombineAndMutateProcreator(male, female)))
+      val proxy = mockParentWithProbe(Props(new TestRecombineAndMutateProcreator(male, female, 1.0)))
 
       val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 6))
       proxy.expectMsg(Descendant(expectedGenome))
     }
 
+    "recombine but not mutate the genome (negative mutation probability)" in {
+      val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
+      val femaleGenotype = SampleGenome(Seq(9, 8, 7, 6, 5))
+
+      val male = TestActorRef(new Phenotype(maleGenotype))
+      val female = TestActorRef(new Phenotype(femaleGenotype))
+      val proxy = mockParentWithProbe(Props(new TestRecombineAndMutateProcreator(male, female, -0.1)))
+
+      val expectedGenome = SampleGenome(Seq(1, 3, 7, 6, 5))
+      proxy.expectMsg(Descendant(expectedGenome))
+    }
+
     "shutdown after timeout if no genomes received" in {
       val mockPhenotype = new TestProbe(system).ref
-      val procreator = TestFSMRef(new TestRecombineProcreator(mockPhenotype, mockPhenotype))
+      val procreator = TestFSMRef(new TestRecombineProcreator(mockPhenotype, mockPhenotype, 1.0))
 
       watch(procreator)
 
@@ -66,7 +78,7 @@ with TestParentChildRelation {
       val mockPhenotype = new TestProbe(system).ref
       val maleGenotype = SampleGenome(Seq(1, 3, 3, 7, 1))
       val male = TestActorRef(new Phenotype(maleGenotype))
-      val procreator = TestFSMRef(new TestRecombineProcreator(male, mockPhenotype))
+      val procreator = TestFSMRef(new TestRecombineProcreator(male, mockPhenotype, 1.0))
 
       watch(procreator)
 

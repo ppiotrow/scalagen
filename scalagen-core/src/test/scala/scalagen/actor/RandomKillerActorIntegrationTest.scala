@@ -23,7 +23,7 @@ with StopSystemAfterAll {
       val endOfAlgorithm = TestActorRef[TestEndOfAlgorithm]
       val evaluator = TestActorRef(new TestEvaluator(endOfAlgorithm))
       val godfather = TestActorRef(Props(
-        new TestGodfather(evaluator, deathItself, randomKiller, controller.ref)))
+        new TestGodfather(evaluator, deathItself, randomKiller, controller.ref, 1.0)))
       // Controller receives population after evaluation.
       val phenotypes = controller.receiveOne(2.second).asInstanceOf[Phenotypes].phenotypes
       // Kill all the phenotypes except the last one

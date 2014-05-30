@@ -36,7 +36,7 @@ with StopSystemAfterAll {
 
       watch(endOfAlgorithm)
       system.actorOf(Props(
-        new TestGodfather(evaluator, deathItself, randomKiller, controller) {
+        new TestGodfather(evaluator, deathItself, randomKiller, controller, 1.0) {
           // It should be easy to find genome greater or equal 8 with 7 and 5 as starting values
           override def initialGenomes = {
             Seq(SampleGenome(Seq(7)), SampleGenome(Seq(5)))
