@@ -3,7 +3,7 @@ package scalagen.actor
 import akka.actor.{ActorRef, Actor, FSM}
 import scala.concurrent.duration.DurationInt
 import scalagen.genome.Genome
-import scalagen.message.{GenomeReaded, ReadGenom, Descendant}
+import scalagen.message.{GenomeRead, ReadGenom, Descendant}
 
 object Procreator {
 
@@ -46,14 +46,14 @@ abstract class Procreator(val male: ActorRef,
   startWith(Procreator.WaitingForGenomes, Procreator.Data(None))
 
   when(Procreator.WaitingForGenomes, waitForGenomeTimeout) {
-    case Event(GenomeReaded(firstGenome), _) =>
+    case Event(GenomeRead(firstGenome), _) =>
       goto(Procreator.OneGenomeLeft) using Procreator.Data(Some(firstGenome))
     case Event(StateTimeout, _) =>
       stop
   }
 
   when(Procreator.OneGenomeLeft, waitForGenomeTimeout) {
-    case Event(GenomeReaded(secondGenome), _) =>
+    case Event(GenomeRead(secondGenome), _) =>
       context.parent ! Descendant(mutate(recombine(stateData.firstGenome.get, secondGenome)))
       stop
     case Event(StateTimeout, _) =>
