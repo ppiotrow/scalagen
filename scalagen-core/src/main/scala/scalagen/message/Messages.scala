@@ -9,7 +9,7 @@ case object GetPhenotypes
 
 case object Death
 
-case class GenomeReaded(genotype: Genome)
+case class GenomeRead(genotype: Genome)
 
 case class Eval(phenotype: ActorRef, genotype: Genome)
 

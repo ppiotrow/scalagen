@@ -1,7 +1,7 @@
 package scalagen.actor
 
 import akka.actor.Actor
-import scalagen.message.{GenomeReaded, ReadGenom}
+import scalagen.message.{GenomeRead, ReadGenom}
 import scalagen.genome.Genome
 
 /**
@@ -9,7 +9,7 @@ import scalagen.genome.Genome
  */
 class Phenotype(genome: Genome) extends Actor {
   def receive = {
-    case ReadGenom => sender ! GenomeReaded(genome)
+    case ReadGenom => sender ! GenomeRead(genome)
   }
 }
 
