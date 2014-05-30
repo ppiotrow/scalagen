@@ -50,10 +50,18 @@ trait RouletteWheelReproduction extends PopulationReproduction with PhenotypeVal
    */
   override def selectCouples(howMany: Int, phenotypes: Seq[Evaluated]) = {
     val sortedPhenotypes = phenotypes.sortWith((e1, e2) => isBetterValue(e1.value, e2.value)).map(_.phenotype)
-    val (rouletteWheel, indexesSum) = sortedPhenotypes.zipWithIndex.reverse.foldLeft((TreeMap[Int, ActorRef](), 0)) {
+    val (rouletteWheel, indexesSum) = sortedPhenotypes.zipWithIndex.reverse.foldLeft(TreeMap[Int, ActorRef](), 0) {
       (treeWithSum, elem) => (treeWithSum._1 + ((treeWithSum._2, elem._1)), elem._2 + treeWithSum._2)
     }
     def randomPhenotypeFromWheel = rouletteWheel.to(Random.nextInt(indexesSum + 1)).last._2
-    Seq.tabulate(howMany) { n => (randomPhenotypeFromWheel, randomPhenotypeFromWheel)}
+    if (rouletteWheel.size < 2) Nil
+    else Seq.tabulate(howMany) { n =>
+      val firstPhenotype = randomPhenotypeFromWheel
+      var secondPhenotype = randomPhenotypeFromWheel
+      while (firstPhenotype == secondPhenotype) {
+        secondPhenotype = randomPhenotypeFromWheel
+      }
+      (firstPhenotype, secondPhenotype)
+    }
   }
 }
