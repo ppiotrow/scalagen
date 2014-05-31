@@ -48,9 +48,9 @@ class BackpackGodfather(evaluator: ActorRef,
                         randomKiller: ActorRef,
                         controller: ActorRef,
                         mutationProbability: Double)
-    extends Godfather(evaluator, deathItself, randomKiller, controller, mutationProbability) {
+    extends Godfather(evaluator, deathItself, randomKiller, controller) {
   override def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
-  override def procreatorFactory(male: ActorRef, female: ActorRef, mutationProbability: Double): Procreator =
+  override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator =
     new BackpackProcreator(male, female, mutationProbability)
   override def initialGenomes = BackpackOperators.genInitial
 }

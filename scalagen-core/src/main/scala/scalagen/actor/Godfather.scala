@@ -19,8 +19,7 @@ import scalagen.message.Descendant
 abstract class Godfather(val evaluator: ActorRef,
                          val deathItself: ActorRef,
                          val randomKiller: ActorRef,
-                         val controller: ActorRef,
-                         val mutationProbability: Double) extends Actor {
+                         val controller: ActorRef) extends Actor {
   var phenotypes = new HashMap[ActorRef, Evaluated]()
   var phenotypesToEvaluate = new HashSet[ActorRef]()
   var phenotypeId: Long = 0
@@ -44,7 +43,7 @@ abstract class Godfather(val evaluator: ActorRef,
 
   def phenotypeFactory(genome: Genome): Phenotype
 
-  def procreatorFactory(male: ActorRef, female: ActorRef, mutationProbability: Double): Procreator
+  def procreatorFactory(male: ActorRef, female: ActorRef): Procreator
 
   def updatePopulation(couples: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef]) = {
     toBeKilled.foreach(killPhenotype(_))
@@ -54,7 +53,7 @@ abstract class Godfather(val evaluator: ActorRef,
   def procreate(parents: (ActorRef, ActorRef)): Unit = {
     val male = parents._1
     val female = parents._2
-    context.actorOf(Props(procreatorFactory(male, female, mutationProbability)), s"procreator$procreatorId")
+    context.actorOf(Props(procreatorFactory(male, female)), s"procreator$procreatorId")
     procreatorId += 1
   }
 
