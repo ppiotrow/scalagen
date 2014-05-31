@@ -15,13 +15,13 @@ object BackpackData {
 
 object BackpackExample extends App {
   val system = ActorSystem("backpackActorSystem")
-  val death = system.actorOf(Props[DeathItself])
-  val randomKiller = system.actorOf(Props[BackPackRandomKiller])
-  val end = system.actorOf(Props[BackpackEndOfAlgorithm])
-  val evaluator = system.actorOf(Props(new BackpackEvaluator(end)))
-  val controller = system.actorOf(Props[BackpackControllerActor])
+  val death = system.actorOf(Props[DeathItself], "death-itself")
+  val randomKiller = system.actorOf(Props[BackPackRandomKiller], "random-killer")
+  val end = system.actorOf(Props[BackpackEndOfAlgorithm], "end-of-algorithm")
+  val evaluator = system.actorOf(Props(new BackpackEvaluator(end)), "evaluator")
+  val controller = system.actorOf(Props[BackpackControllerActor], "controller")
 
-  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller)))
+  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller)), "godfather")
 }
 
 /**
