@@ -4,19 +4,31 @@ import akka.actor.{ActorRef, Actor, FSM}
 import scala.concurrent.duration.DurationInt
 import scalagen.genome.Genome
 import scalagen.message.{GenomeRead, ReadGenom, Descendant}
+import scala.util.Random
 
 object Procreator {
 
   sealed trait State
+
   case object WaitingForGenomes extends State
+
   case object OneGenomeLeft extends State
 
   case class Data(firstGenome: Option[Genome])
 
 }
 
+/**
+ * An actor that creates a new descendant.
+ * @param male male parent
+ * @param female female parent
+ * @param mutationProbability probability of a mutation; this value should be between 0.0 and 1.0, but other values
+ *                            are also valid (for values greater or equal 1.0 the mutation will always occur on the
+ *                            contrary for a negative value mutation will never occur)
+ */
 abstract class Procreator(val male: ActorRef,
-                          val female: ActorRef) extends Actor with FSM[Procreator.State, Procreator.Data] {
+                          val female: ActorRef,
+                          val mutationProbability: Double) extends Actor with FSM[Procreator.State, Procreator.Data] {
 
   /**
    * The crossover step of a reproduction process.
@@ -38,7 +50,7 @@ abstract class Procreator(val male: ActorRef,
     */
   val waitForGenomeTimeout = 3.seconds
 
-  override def preStart(): Unit= {
+  override def preStart(): Unit = {
     male ! ReadGenom
     female ! ReadGenom
   }
@@ -49,15 +61,17 @@ abstract class Procreator(val male: ActorRef,
     case Event(GenomeRead(firstGenome), _) =>
       goto(Procreator.OneGenomeLeft) using Procreator.Data(Some(firstGenome))
     case Event(StateTimeout, _) =>
-      stop
+      stop()
   }
 
   when(Procreator.OneGenomeLeft, waitForGenomeTimeout) {
     case Event(GenomeRead(secondGenome), _) =>
-      context.parent ! Descendant(mutate(recombine(stateData.firstGenome.get, secondGenome)))
-      stop
+      val recombined = recombine(stateData.firstGenome.get, secondGenome)
+      val descendant = if (Random.nextDouble() <= mutationProbability) mutate(recombined) else recombined
+      context.parent ! Descendant(descendant)
+      stop()
     case Event(StateTimeout, _) =>
-      stop
+      stop()
   }
   initialize()
 }

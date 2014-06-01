@@ -20,8 +20,9 @@ object BackpackExample extends App {
   val end = system.actorOf(Props[BackpackEndOfAlgorithm], "end-of-algorithm")
   val evaluator = system.actorOf(Props(new BackpackEvaluator(end)), "evaluator")
   val controller = system.actorOf(Props[BackpackControllerActor], "controller")
+  val mutationProbability = 1.0
 
-  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller)), "godfather")
+  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller, mutationProbability)), "godfather")
 }
 
 /**
@@ -36,15 +37,21 @@ class BackpackEvaluator(endOfAlgorithm: ActorRef) extends Evaluator(endOfAlgorit
   def eval(genome: Genome): Double = BackpackOperators.eval(genome)
 }
 
-class BackpackProcreator(male: ActorRef, female: ActorRef) extends Procreator(male, female) {
+class BackpackProcreator(male: ActorRef, female: ActorRef, mutationProbability: Double)
+  extends Procreator(male, female, mutationProbability) {
   override def recombine(genomeA: Genome, genomeB: Genome): Genome = BackpackOperators.recombine(genomeA, genomeB)
   override def mutate(genome: Genome): Genome = BackpackOperators.mutate(genome)
 }
 
-class BackpackGodfather(evaluator: ActorRef, deathItself: ActorRef, randomKiller: ActorRef, controller: ActorRef)
+class BackpackGodfather(evaluator: ActorRef,
+                        deathItself: ActorRef,
+                        randomKiller: ActorRef,
+                        controller: ActorRef,
+                        mutationProbability: Double)
     extends Godfather(evaluator, deathItself, randomKiller, controller) {
   override def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
-  override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator = new BackpackProcreator(male, female)
+  override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator =
+    new BackpackProcreator(male, female, mutationProbability)
   override def initialGenomes = BackpackOperators.genInitial
 }
 

@@ -17,7 +17,8 @@ object SampleActors {
   /**
    * Does only recombination. Returns the recombined genome as result of mutation.
    */
-  class TestRecombineProcreator(male: ActorRef, female: ActorRef) extends Procreator(male, female) {
+  class TestRecombineProcreator(male: ActorRef, female: ActorRef, mutationProbability: Double)
+    extends Procreator(male, female, mutationProbability) {
     override def recombine(genomeA: Genome, genomeB: Genome): Genome =
       SampleOperators.recombine(genomeA, genomeB)
 
@@ -28,7 +29,8 @@ object SampleActors {
   /**
    * Does only mutation. Returns the genome A as the result of recombination.
    */
-  class TestMutateProcreator(male: ActorRef, female: ActorRef) extends Procreator(male, female){
+  class TestMutateProcreator(male: ActorRef, female: ActorRef, mutationProbability: Double)
+    extends Procreator(male, female, mutationProbability){
     override def recombine(genomeA: Genome, genomeB: Genome): Genome =
       genomeA
 
@@ -39,7 +41,8 @@ object SampleActors {
   /**
    * Does both recombination and mutation.
    */
-  class TestRecombineAndMutateProcreator(male: ActorRef, female: ActorRef) extends Procreator(male, female){
+  class TestRecombineAndMutateProcreator(male: ActorRef, female: ActorRef, mutationProbability: Double)
+    extends Procreator(male, female, mutationProbability){
     override def recombine(genomeA: Genome, genomeB: Genome): Genome =
       SampleOperators.recombine(genomeA, genomeB)
 
@@ -50,14 +53,16 @@ object SampleActors {
   class TestGodfather(evaluator: ActorRef,
                       deathItself: ActorRef,
                       randomKiller: ActorRef,
-                      controller: ActorRef)
+                      controller: ActorRef,
+                      mutationProbability: Double)
     extends Godfather(evaluator, deathItself, randomKiller, controller) {
     override def initialGenomes: Seq[Genome] =
       List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
 
     override def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
 
-    override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator = new TestRecombineAndMutateProcreator(male, female)
+    override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator =
+      new TestRecombineAndMutateProcreator(male, female, mutationProbability)
   }
 
   class TestRandomKiller(randomKillRatio: Float)
