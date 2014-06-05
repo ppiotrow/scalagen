@@ -53,8 +53,8 @@ class BackpackGodfather(evaluator: ActorRef,
 }
 
 class BackpackControllerActor extends Controller with KillTheWorsts with RouletteWheelReproduction with MaximizeValue {
-  def optimalPopulationSize = 30
-  def maxToKillOrCreate = 20
+  override def optimalPopulationSize = 30
+  override def maxToKillOrCreate = 20
 }
 
 class BackpackEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
