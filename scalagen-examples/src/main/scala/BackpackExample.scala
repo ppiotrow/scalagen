@@ -7,7 +7,7 @@ import scalagen.message.Evaluated
 import scalagen.population.{MaximizeValue, RouletteWheelReproduction, KillTheWorsts}
 
 object BackpackData {
-  val weights = Vector(1, 1, 3, 2, 5, 7, 2, 8, 12, 5, 1, 2)
+  val weights = Vector(1, 1, 3, 2, 5, 7, 2, 8, 12, 5, 1 , 2)
   val profits = Vector(3, 2, 3, 1, 1, 3, 6, 2, 23, 6, 12, 12)
   val items =      Seq(0, 1, 2, 3, 4, 5, 6, 7, 8,  9, 10, 11)
   val backpackWeightLimit = 25
@@ -20,9 +20,8 @@ object BackpackExample extends App {
   val end = system.actorOf(Props[BackpackEndOfAlgorithm], "end-of-algorithm")
   val evaluator = system.actorOf(Props(new BackpackEvaluator(end)), "evaluator")
   val controller = system.actorOf(Props[BackpackControllerActor], "controller")
-  val mutationProbability = 1.0
 
-  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller, mutationProbability)), "godfather")
+  system.actorOf(Props(new BackpackGodfather(evaluator, death, randomKiller, controller)), "godfather")
 }
 
 /**
@@ -34,30 +33,28 @@ object BackpackExample extends App {
 case class BackpackGenome(itemsOrder: Seq[Int]) extends Genome
 
 class BackpackEvaluator(endOfAlgorithm: ActorRef) extends Evaluator(endOfAlgorithm) with MaximizeValue {
-  def eval(genome: Genome): Double = BackpackOperators.eval(genome)
+  def eval(genome: Genome) = BackpackOperators.eval(genome)
 }
 
 class BackpackProcreator(male: ActorRef, female: ActorRef, mutationProbability: Double)
   extends Procreator(male, female, mutationProbability) {
-  override def recombine(genomeA: Genome, genomeB: Genome): Genome = BackpackOperators.recombine(genomeA, genomeB)
-  override def mutate(genome: Genome): Genome = BackpackOperators.mutate(genome)
+  def recombine(genomeA: Genome, genomeB: Genome) = BackpackOperators.recombine(genomeA, genomeB)
+  def mutate(genome: Genome) = BackpackOperators.mutate(genome)
 }
 
 class BackpackGodfather(evaluator: ActorRef,
                         deathItself: ActorRef,
                         randomKiller: ActorRef,
-                        controller: ActorRef,
-                        mutationProbability: Double)
+                        controller: ActorRef)
     extends Godfather(evaluator, deathItself, randomKiller, controller) {
-  override def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
-  override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator =
-    new BackpackProcreator(male, female, mutationProbability)
-  override def initialGenomes = BackpackOperators.genInitial
+  def procreatorFactory(male: ActorRef, female: ActorRef) =
+    new BackpackProcreator(male, female, BackpackOperators.mutationProbability)
+  def initialGenomes = BackpackOperators.genInitial
 }
 
 class BackpackControllerActor extends Controller with KillTheWorsts with RouletteWheelReproduction with MaximizeValue {
-  override def optimalPopulationSize: Int = 30
-  override def maxToKillOrCreate: Int = 20
+  def optimalPopulationSize = 30
+  def maxToKillOrCreate = 20
 }
 
 class BackpackEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
@@ -68,7 +65,7 @@ class BackpackEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
 }
 
 class BackPackRandomKiller extends RandomKiller(0.01f) {
-  override def selectToKill(phenotypes: Seq[Evaluated]): Option[ActorRef] = Option(phenotypes.head.phenotype)
+  def selectToKill(phenotypes: Seq[Evaluated]): Option[ActorRef] = Option(phenotypes.head.phenotype)
 }
 
 object BackpackOperators {
@@ -94,21 +91,17 @@ object BackpackOperators {
 
   /**
    * Swaps two items in items precedence to be packed list.
-   * Action is performed with probability 5%
    */
   def mutate(genome: Genome): Genome = {
-    if (Random.nextDouble() < 0.05d) {
-      val backPackGenome = genome.asInstanceOf[BackpackGenome]
-      val itemsOrder = backPackGenome.itemsOrder
-      val buffer = new ArrayBuffer[Int] ++= itemsOrder
-      val index = Random.nextInt(itemsOrder.length)
-      val index2 = Random.nextInt(itemsOrder.length)
-      val tmp = buffer(index)
-      buffer(index) = buffer(index2)
-      buffer(index2) = tmp
-      backPackGenome.copy(itemsOrder = buffer.toSeq)
-    }
-    else genome
+    val backPackGenome = genome.asInstanceOf[BackpackGenome]
+    val itemsOrder = backPackGenome.itemsOrder
+    val buffer = new ArrayBuffer[Int] ++= itemsOrder
+    val index = Random.nextInt(itemsOrder.length)
+    val index2 = Random.nextInt(itemsOrder.length)
+    val tmp = buffer(index)
+    buffer(index) = buffer(index2)
+    buffer(index2) = tmp
+    backPackGenome.copy(itemsOrder = buffer.toSeq)
   }
 
   /**
@@ -136,4 +129,9 @@ object BackpackOperators {
    * Generates initial 20 permutations of backpacks items.
    */
   def genInitial = Seq.fill(20)(BackpackGenome(Random.shuffle(BackpackData.items)))
+
+  /**
+   * Probability that mutation occurs during procreation
+   */
+  val mutationProbability = 0.05d
 }

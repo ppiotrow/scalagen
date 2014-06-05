@@ -41,7 +41,7 @@ abstract class Godfather(val evaluator: ActorRef,
 
   def initialGenomes: Seq[Genome]
 
-  def phenotypeFactory(genome: Genome): Phenotype
+  def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
 
   def procreatorFactory(male: ActorRef, female: ActorRef): Procreator
 
