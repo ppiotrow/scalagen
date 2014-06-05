@@ -59,8 +59,6 @@ object SampleActors {
     override def initialGenomes: Seq[Genome] =
       List.fill(9)(SampleGenome(Nil)) :+ SampleGenome(List(1337))
 
-    override def phenotypeFactory(genome: Genome): Phenotype = new Phenotype(genome)
-
     override def procreatorFactory(male: ActorRef, female: ActorRef): Procreator =
       new TestRecombineAndMutateProcreator(male, female, mutationProbability)
   }
