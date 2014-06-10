@@ -16,7 +16,7 @@ object ScalagenBuild extends Build {
     base = file("scalagen-core"))
     .settings(
       name := "scalagen",
-      version := "0.1.0",
+      version := "0.2.0",
       organization := "com.github.scalagen",
       libraryDependencies ++= Dependencies.core,
       scalacOptions ++= Seq("-feature"))
@@ -68,7 +68,7 @@ object Publishing {
 
     homepage := Some(url("http://github.com/ppiotrow/scalagen")),
 
-    licenses += "BSD-Style" -> url("http://www.opensource.org/licenses/bsd-license.php"),
+    licenses += "Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"),
 
     scmInfo := Some(ScmInfo(url("http://github.com/ppiotrow/scalagen"), "scm:git@github.com:ppiotrow/scalagen.git")),
 
@@ -82,7 +82,7 @@ object Publishing {
         <developer>
           <id>tomrozb</id>
           <name>Tomasz Rozbicki</name>
-          <url></url>
+          <url>linkedin.com/in/tomaszrozbicki</url>
         </developer>
       </developers>
   )
