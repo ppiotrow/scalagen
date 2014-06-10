@@ -68,7 +68,25 @@ If you would like to contribute to scalagen, your help is very welcome. You may
 * make up your own improvement,
 * write some example using library.
 
+Download
+--------
 
+SBT
+```scala
+libraryDependencies += "com.github.scalagen" % "scalagen_2.10" % "0.1.0"
+```
+
+Gradle
+```groovy
+compile 'com.github.scalagen:scalagen_2.10:0.1.0'
+```
+
+Maven
+```xml
+<groupId>com.github.scalagen</groupId>
+<artifactId>scalagen_2.10</artifactId>
+<version>0.1.0</version>
+```
 
 License
 --------
