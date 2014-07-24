@@ -3,8 +3,6 @@ import sbt.Keys._
 
 object ScalagenBuild extends Build {
 
-  scalaVersion := "2.10.4"
-
 	lazy val root = Project(
 		id = "root",
 		base = file("."),
@@ -16,7 +14,8 @@ object ScalagenBuild extends Build {
     base = file("scalagen-core"))
     .settings(
       name := "scalagen",
-      version := "0.2.0",
+      scalaVersion := "2.11.2",
+      version := "0.3.0",
       organization := "com.github.scalagen",
       libraryDependencies ++= Dependencies.core,
       scalacOptions ++= Seq("-feature"))
@@ -27,19 +26,20 @@ object ScalagenBuild extends Build {
 		base = file("scalagen-examples"))
     .dependsOn(core)
     .settings(
-        libraryDependencies++=Dependencies.examples
+      scalaVersion := "2.11.2",
+      libraryDependencies++=Dependencies.examples
     )
 }
 
 object Dependencies {
   object Compile {
-    val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.3.3"
+    val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.3.4"
     val jodaTime = "joda-time" % "joda-time" % "2.3"
     val jodaConvert = "org.joda" % "joda-convert" % "1.6"
   }
 
   object Test {
-    val akkaTestkit ="com.typesafe.akka" %% "akka-testkit" % "2.3.3" % "test"
+    val akkaTestkit ="com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test"
     val scalaTest = "org.scalatest" %% "scalatest" % "2.2.0-M1" % "test"
     val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.4" % "test"
   }
