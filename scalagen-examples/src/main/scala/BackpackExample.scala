@@ -58,7 +58,7 @@ class BackpackControllerActor extends Controller with KillTheWorsts with Roulett
 }
 
 class BackpackEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
-  override def shouldStopCalculations(value: Double) = value > 64
+  override def shouldStopCalculations(value: Double) = value > 61
   override def onFinish = {
     super.onFinish
     context.system.shutdown()}
