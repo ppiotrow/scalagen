@@ -65,7 +65,7 @@ class BackpackEndOfAlgorithm extends EndOfAlgorithm with MaximizeValue {
 }
 
 class BackPackRandomKiller extends RandomKiller(0.01f) {
-  def selectToKill(phenotypes: Seq[Evaluated]): Option[ActorRef] = Option(phenotypes.head.phenotype)
+  def selectToKill(phenotypes: Seq[Evaluated]): Option[ActorRef] = None
 }
 
 object BackpackOperators {
