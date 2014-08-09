@@ -49,7 +49,9 @@ abstract class Controller extends Actor with PopulationReproduction with Populat
   def updatePopulation(currentPopulation: Seq[Evaluated]) = {
     val (numberToKill, numberToCreate) = calculatePopulationChange(currentPopulation.size)
     val toBeKilled = selectToBeKilled(numberToKill, currentPopulation)
-    val alive = currentPopulation diff toBeKilled
+    val alive = currentPopulation.filterNot { case Evaluated(ref, value) =>
+      toBeKilled.contains(ref)
+    }
     val couples = selectCouples(numberToCreate, alive)
     (couples, toBeKilled)
   }
