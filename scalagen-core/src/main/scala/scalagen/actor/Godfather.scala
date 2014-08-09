@@ -83,10 +83,7 @@ abstract class Godfather(val evaluator: ActorRef,
     evaluator ! Eval(newPhenotype, genome)
   }
 
-  def shouldInformController: Boolean = {
-    phenotypesToEvaluate == 0
-  }
-
+  def shouldInformController: Boolean = phenotypesToEvaluate == 0
   def informController(): Unit = {
     controller ! Phenotypes(phenotypes.values.toSeq)
   }
