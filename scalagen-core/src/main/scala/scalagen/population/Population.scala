@@ -2,7 +2,7 @@ package scalagen.population
 
 import scalagen.message.Evaluated
 import akka.actor.ActorRef
-import scala.util.Random
+import scala.concurrent.forkjoin.ThreadLocalRandom.{current => Random}
 import scala.collection.immutable.TreeMap
 
 

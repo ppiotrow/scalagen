@@ -1,11 +1,11 @@
 import akka.actor.{Props, ActorSystem, ActorRef}
 import scala.collection.mutable.ArrayBuffer
-import scala.util.Random
+import scala.concurrent.forkjoin.ThreadLocalRandom.{current => Random}
+import scala.util.{Random => BlockingRandom}
 import scalagen.actor._
 import scalagen.genome.Genome
 import scalagen.message.Evaluated
 import scalagen.population.{MaximizeValue, RouletteWheelReproduction, KillTheWorsts}
-
 object BackpackData {
   val weights = Vector(1, 1, 3, 2, 5, 7, 2, 8, 12, 5, 1 , 2)
   val profits = Vector(3, 2, 3, 1, 1, 3, 6, 2, 23, 6, 12, 12)
@@ -128,7 +128,7 @@ object BackpackOperators {
   /**
    * Generates initial 20 permutations of backpacks items.
    */
-  def genInitial = Seq.fill(20)(BackpackGenome(Random.shuffle(BackpackData.items)))
+  def genInitial = Seq.fill(20)(BackpackGenome(BlockingRandom.shuffle(BackpackData.items)))
 
   /**
    * Probability that mutation occurs during procreation
