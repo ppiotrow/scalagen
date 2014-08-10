@@ -15,7 +15,7 @@ object ScalagenBuild extends Build {
     .settings(
       name := "scalagen",
       scalaVersion := "2.11.2",
-      version := "0.4.0-SNAPSHOT",
+      version := "0.4.0",
       organization := "com.github.scalagen",
       libraryDependencies ++= Dependencies.core,
       scalacOptions ++= Seq("-feature"))
