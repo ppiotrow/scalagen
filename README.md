@@ -73,19 +73,19 @@ Download
 
 SBT
 ```scala
-libraryDependencies += "com.github.scalagen" % "scalagen_2.11" % "0.3.0"
+libraryDependencies += "com.github.scalagen" % "scalagen_2.11" % "0.4.0"
 ```
 
 Gradle
 ```groovy
-compile 'com.github.scalagen:scalagen_2.11:0.3.0'
+compile 'com.github.scalagen:scalagen_2.11:0.4.0'
 ```
 
 Maven
 ```xml
 <groupId>com.github.scalagen</groupId>
 <artifactId>scalagen_2.11</artifactId>
-<version>0.3.0</version>
+<version>0.4.0</version>
 ```
 
 License
