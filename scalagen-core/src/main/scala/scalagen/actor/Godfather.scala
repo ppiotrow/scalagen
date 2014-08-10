@@ -3,9 +3,8 @@ package scalagen.actor
 import akka.actor._
 import scalagen.genome.Genome
 import scalagen.message._
-import scala.collection.immutable.{HashSet, HashMap}
+import scala.collection.immutable.{HashMap}
 import scalagen.message.UpdatePopulation
-import scalagen.message.Best
 import scalagen.message.Eval
 import scalagen.message.Kill
 import akka.actor.Terminated
@@ -21,7 +20,7 @@ abstract class Godfather(val evaluator: ActorRef,
                          val randomKiller: ActorRef,
                          val controller: ActorRef) extends Actor {
   var phenotypes = new HashMap[ActorRef, Evaluated]()
-  var phenotypesToEvaluate = new HashSet[ActorRef]()
+  var phenotypesToEvaluate = 0
   var phenotypeId: Long = 0
   var procreatorId: Long = 0
 
@@ -47,6 +46,7 @@ abstract class Godfather(val evaluator: ActorRef,
 
   def updatePopulation(couples: Seq[(ActorRef, ActorRef)], toBeKilled: Seq[ActorRef]) = {
     toBeKilled.foreach(killPhenotype(_))
+    phenotypesToEvaluate = couples.size
     couples.foreach(procreate(_))
   }
 
@@ -63,11 +63,12 @@ abstract class Godfather(val evaluator: ActorRef,
   }
 
   def updateEvaluatedData(evaluated: Evaluated): Unit = {
-    phenotypesToEvaluate -= evaluated.phenotype
+    phenotypesToEvaluate -= 1
     phenotypes += ((evaluated.phenotype, evaluated))
   }
 
   override def preStart: Unit = {
+    phenotypesToEvaluate = initialGenomes.size
     initialGenomes.map(startNewPhenotype _)
   }
 
@@ -78,13 +79,11 @@ abstract class Godfather(val evaluator: ActorRef,
   def startNewPhenotype(genome: Genome): Unit = {
     val newPhenotype = context.actorOf(Props(phenotypeFactory(genome)), s"phenotype$phenotypeId")
     phenotypeId += 1
-    phenotypesToEvaluate += newPhenotype
     context.watch(newPhenotype)
     evaluator ! Eval(newPhenotype, genome)
   }
 
-  def shouldInformController: Boolean = phenotypesToEvaluate.isEmpty
-
+  def shouldInformController: Boolean = phenotypesToEvaluate == 0
   def informController(): Unit = {
     controller ! Phenotypes(phenotypes.values.toSeq)
   }

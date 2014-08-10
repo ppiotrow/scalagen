@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, Actor, FSM}
 import scala.concurrent.duration.DurationInt
 import scalagen.genome.Genome
 import scalagen.message.{GenomeRead, ReadGenom, Descendant}
-import scala.util.Random
+import scala.concurrent.forkjoin.ThreadLocalRandom.{current => Random}
 
 object Procreator {
 
